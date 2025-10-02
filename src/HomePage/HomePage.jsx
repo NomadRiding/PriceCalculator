@@ -166,14 +166,14 @@ export default function ClosetEstimator() {
     paymentType === "credit" ? subtotalWithFees + tax : subtotalWithFees
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-4xl bg-white shadow-xl rounded-3xl p-8">
-        <h1 className="text-3xl font-extrabold mb-6 text-gray-900 tracking-wide">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-3 sm:p-6">
+      <div className="w-full max-w-4xl bg-white shadow-xl rounded-2xl sm:rounded-3xl p-4 sm:p-8">
+        <h1 className="text-2xl sm:text-3xl font-extrabold mb-4 sm:mb-6 text-gray-900 tracking-wide">
           Organizers Unlimited
         </h1>
 
         {/* Commission Selector */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <label className="block text-sm font-medium text-gray-600 mb-2">
             Client Source
           </label>
@@ -188,23 +188,23 @@ export default function ClosetEstimator() {
         </div>
 
         {/* Design Changes Counter */}
-        <div className="mb-8 text-center">
+        <div className="mb-6 sm:mb-8 text-center">
           <label className="block text-sm font-medium text-gray-600 mb-2">
             Design Changes
           </label>
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center justify-center gap-4">
             <button
               onClick={() => setDesignChanges(Math.max(1, designChanges - 1))}
-              className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-700 font-medium"
+              className="w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-700 font-medium text-lg sm:text-base"
             >
               -
             </button>
-            <span className="text-lg font-medium text-gray-900 min-w-[2rem] text-center">
+            <span className="text-xl sm:text-lg font-medium text-gray-900 min-w-[2.5rem] sm:min-w-[2rem] text-center">
               {designChanges}
             </span>
             <button
               onClick={() => setDesignChanges(designChanges + 1)}
-              className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-700 font-medium"
+              className="w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-700 font-medium text-lg sm:text-base"
             >
               +
             </button>
@@ -215,7 +215,7 @@ export default function ClosetEstimator() {
         {rooms.map((room) => (
           <div
             key={room.id}
-            className="mb-6 p-6 border border-gray-200 rounded-2xl bg-white shadow-md hover:shadow-lg transition-shadow duration-300"
+            className="mb-4 sm:mb-6 p-4 sm:p-6 border border-gray-200 rounded-xl sm:rounded-2xl bg-white shadow-md hover:shadow-lg transition-shadow duration-300"
           >
             {/* Room Name */}
             <div className="flex items-center gap-3 mb-4">
@@ -331,35 +331,37 @@ export default function ClosetEstimator() {
 
         {/* Add Room Button */}
         <button
-          className="px-5 py-3 bg-indigo-600 text-white rounded-lg shadow-md hover:shadow-lg hover:bg-indigo-500 transition-all duration-200 font-medium mb-8"
+          className="w-full sm:w-auto px-6 py-4 sm:px-5 sm:py-3 bg-indigo-600 text-white rounded-lg shadow-md hover:shadow-lg hover:bg-indigo-500 transition-all duration-200 font-medium mb-6 sm:mb-8"
           onClick={addRoom}
         >
           Add Another Room
         </button>
 
         {/* Grand Total */}
-        <div className="mt-8 p-6 border-t border-gray-200 bg-white rounded-2xl shadow-md">
-          <h2 className="text-2xl font-bold mb-4 text-gray-900">Grand Total</h2>
+        <div className="mt-6 sm:mt-8 p-4 sm:p-6 border-t border-gray-200 bg-white rounded-xl sm:rounded-2xl shadow-md">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 text-gray-900">
+            Grand Total
+          </h2>
 
           {/* Payment Toggle */}
-          <div className="mb-4 flex justify-center gap-6 text-gray-700">
-            <label className="flex items-center gap-2">
+          <div className="mb-4 flex justify-center gap-8 sm:gap-6 text-gray-700">
+            <label className="flex items-center gap-2 text-lg sm:text-base">
               <input
                 type="radio"
                 value="cash"
                 checked={paymentType === "cash"}
                 onChange={() => setPaymentType("cash")}
-                className="accent-indigo-600"
+                className="accent-indigo-600 w-4 h-4"
               />
               Cash
             </label>
-            <label className="flex items-center gap-2">
+            <label className="flex items-center gap-2 text-lg sm:text-base">
               <input
                 type="radio"
                 value="credit"
                 checked={paymentType === "credit"}
                 onChange={() => setPaymentType("credit")}
-                className="accent-indigo-600"
+                className="accent-indigo-600 w-4 h-4"
               />
               Credit
             </label>
@@ -428,9 +430,9 @@ function ItemSelector({ items, onAdd }) {
   }
 
   return (
-    <div className="flex space-x-3 mb-4">
+    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 mb-4">
       <select
-        className="border border-gray-300 rounded-lg p-2 flex-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+        className="border border-gray-300 rounded-lg p-3 sm:p-2 flex-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         value={selected}
         onChange={(e) => setSelected(parseInt(e.target.value))}
       >
@@ -440,19 +442,21 @@ function ItemSelector({ items, onAdd }) {
           </option>
         ))}
       </select>
-      <input
-        type="number"
-        min="1"
-        className="w-20 border border-gray-300 rounded-lg p-2 text-center text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-        value={qty}
-        onChange={(e) => setQty(e.target.value)}
-      />
-      <button
-        className="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:shadow-lg hover:bg-green-500 transition-all duration-200 font-medium"
-        onClick={handleAdd}
-      >
-        Add
-      </button>
+      <div className="flex space-x-2 sm:space-x-0">
+        <input
+          type="number"
+          min="1"
+          className="w-20 border border-gray-300 rounded-lg p-3 sm:p-2 text-center text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          value={qty}
+          onChange={(e) => setQty(e.target.value)}
+        />
+        <button
+          className="px-6 py-3 sm:px-4 sm:py-2 bg-green-600 text-white rounded-lg shadow-md hover:shadow-lg hover:bg-green-500 transition-all duration-200 font-medium flex-1 sm:flex-none"
+          onClick={handleAdd}
+        >
+          Add
+        </button>
+      </div>
     </div>
   )
 }
