@@ -16,6 +16,12 @@ export default function ClosetEstimator() {
     { id: 11, name: "DWTS", price: 300 },
   ]
 
+  const accessories = [
+    { id: 1, name: "Valet", price: 150 },
+    { id: 2, name: "Tie Rack", price: 75 },
+    { id: 3, name: "Belt Rack", price: 75 },
+  ]
+
   const [commissionRate, setCommissionRate] = useState(0.15)
   const [rooms, setRooms] = useState([
     {
@@ -397,7 +403,7 @@ export default function ClosetEstimator() {
             </div>
             {paymentType === "cash" && (
               <div className="flex justify-between text-green-600">
-                <span>Tax Savings:</span>
+                <span>Tax Exempt:</span>
                 <span>-${Math.floor(taxSavings).toLocaleString()}</span>
               </div>
             )}
