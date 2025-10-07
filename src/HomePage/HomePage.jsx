@@ -11,9 +11,19 @@ export default function ClosetEstimator() {
     { id: 6, name: "Doors (Full)", price: 100 },
     { id: 7, name: "Doors (Half)", price: 75 },
     { id: 8, name: "TS", price: 100 },
-    { id: 9, name: "DTS", price: 150 },
+    { id: 9, name: "Extra TS", price: 150 },
     { id: 10, name: "WTS", price: 200 },
-    { id: 11, name: "DWTS", price: 300 },
+    { id: 11, name: "Extra WTS", price: 300 },
+    { id: 12, name: "Valet", price: 50 },
+    { id: 13, name: "Tie Rack", price: 50 },
+    { id: 14, name: "Belt Rack", price: 50 },
+    { id: 15, name: "Hamper", price: 225 },
+    { id: 16, name: "Legs", price: 10 },
+    { id: 17, name: "Touch Latch", price: 10 },
+    { id: 18, name: "Gold Rod", price: 25 },
+    { id: 19, name: "Black Rod", price: 25 },
+    { id: 20, name: "Pull-Down Hanging", price: 300 },
+    { id: 21, name: "Half-A/S", price: 75 },
   ]
 
   const accessories = [
@@ -35,6 +45,7 @@ export default function ClosetEstimator() {
   ])
   const [paymentType, setPaymentType] = useState("credit") // "cash" or "credit"
   const [showAdminFee, setShowAdminFee] = useState(true) // Administrative fee toggle
+  const [showCOI, setShowCOI] = useState(false) // COI Required toggle
   const [designChanges, setDesignChanges] = useState(1) // Design changes counter
 
   // Add a new room
@@ -50,6 +61,14 @@ export default function ClosetEstimator() {
         selectedColor: "",
       },
     ])
+  }
+
+  // Remove a room
+  const removeRoom = (roomId) => {
+    if (rooms.length > 1) {
+      // Prevent removing the last room
+      setRooms((prev) => prev.filter((room) => room.id !== roomId))
+    }
   }
 
   // Add an item to a room
@@ -161,10 +180,13 @@ export default function ClosetEstimator() {
   // Administrative fee
   const adminFee = showAdminFee ? 250 : 0
 
+  // COI Required fee
+  const coiFee = showCOI ? 250 : 0
+
   // Design changes fee (each change above 1 costs $20)
   const designChangesFee = designChanges > 1 ? (designChanges - 1) * 20 : 0
 
-  const subtotalWithFees = subtotal + adminFee + designChangesFee
+  const subtotalWithFees = subtotal + adminFee + coiFee + designChangesFee
 
   const tax = paymentType === "credit" ? subtotalWithFees * 0.07 : 0
   const taxSavings = paymentType === "cash" ? subtotalWithFees * 0.07 : 0
@@ -249,6 +271,15 @@ export default function ClosetEstimator() {
                   >
                     ✏️ Edit
                   </button>
+                  {rooms.length > 1 && (
+                    <button
+                      onClick={() => removeRoom(room.id)}
+                      className="text-red-600 hover:text-red-800 text-sm ml-1"
+                      title="Remove this room"
+                    >
+                      🗑️ Delete
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -265,15 +296,22 @@ export default function ClosetEstimator() {
                   <span className="text-sm font-medium">Color Finish</span>
                 </label>
                 {room.hasColor && room.selectedColor && (
-                  <span
-                    className="inline-block w-4 h-4 rounded-full border bg-cover bg-center"
+                  <a
+                    href={
+                      colors.find((c) => c.name === room.selectedColor)
+                        ?.imageUrl
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block w-4 h-4 rounded-full border bg-cover bg-center cursor-pointer hover:ring-2 hover:ring-indigo-300 transition-all duration-200"
                     style={{
                       backgroundImage: `url(${
                         colors.find((c) => c.name === room.selectedColor)
                           ?.imageUrl
                       })`,
                     }}
-                  ></span>
+                    title="Click to view color details"
+                  ></a>
                 )}
               </div>
               {room.hasColor && (
@@ -373,28 +411,48 @@ export default function ClosetEstimator() {
             </label>
           </div>
 
-          {/* Discrete admin fee toggle - click on text to toggle */}
-          <div className="mb-4 text-center">
-            <span
-              onClick={() => setShowAdminFee(!showAdminFee)}
-              className="text-xs text-gray-400 cursor-pointer select-none"
-              title="Click to toggle administrative fee"
-            >
-              {showAdminFee ? "●" : "○"} Admin
-            </span>
-          </div>
-
           {/* Totals Breakdown */}
           <div className="text-gray-700 space-y-2">
             {showAdminFee ? (
               <div className="flex justify-between">
-                <span>Administrative Fee:</span>
+                <span
+                  onClick={() => setShowAdminFee(!showAdminFee)}
+                  className="cursor-pointer select-none"
+                >
+                  Administrative Fee:
+                </span>
                 <span>${adminFee.toLocaleString()}</span>
               </div>
             ) : (
               <div className="flex justify-between text-green-600">
-                <span>Administrative Fee Waived:</span>
+                <span
+                  onClick={() => setShowAdminFee(!showAdminFee)}
+                  className="cursor-pointer select-none"
+                >
+                  Administrative Fee Waived:
+                </span>
                 <span>-$250</span>
+              </div>
+            )}
+            {showCOI ? (
+              <div className="flex justify-between">
+                <span
+                  onClick={() => setShowCOI(!showCOI)}
+                  className="cursor-pointer select-none"
+                >
+                  COI Required:
+                </span>
+                <span>${coiFee.toLocaleString()}</span>
+              </div>
+            ) : (
+              <div className="flex justify-between text-green-600">
+                <span
+                  onClick={() => setShowCOI(!showCOI)}
+                  className="cursor-pointer select-none"
+                >
+                  COI Not Required:
+                </span>
+                <span>$0</span>
               </div>
             )}
             <div className="flex justify-between">
@@ -426,12 +484,19 @@ export default function ClosetEstimator() {
 
 /* Helper Component: Item Selector */
 function ItemSelector({ items, onAdd }) {
-  const [selected, setSelected] = useState(items[0].id)
+  // Sort items alphabetically by name
+  const sortedItems = [...items].sort((a, b) => a.name.localeCompare(b.name))
+
+  // Find the "Unit" item to use as default
+  const unitItem = items.find((item) => item.name === "Unit")
+  const defaultId = unitItem ? unitItem.id : items[0].id
+
+  const [selected, setSelected] = useState(defaultId)
   const [qty, setQty] = useState(1)
 
   const handleAdd = () => {
     onAdd(selected, qty)
-    setSelected(items[0].id)
+    setSelected(defaultId)
     setQty(1)
   }
 
@@ -442,7 +507,7 @@ function ItemSelector({ items, onAdd }) {
         value={selected}
         onChange={(e) => setSelected(parseInt(e.target.value))}
       >
-        {items.map((item) => (
+        {sortedItems.map((item) => (
           <option key={item.id} value={item.id}>
             {item.name}
           </option>
@@ -455,6 +520,7 @@ function ItemSelector({ items, onAdd }) {
           className="w-20 border border-gray-300 rounded-lg p-3 sm:p-2 text-center text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           value={qty}
           onChange={(e) => setQty(e.target.value)}
+          onFocus={(e) => e.target.select()}
         />
         <button
           className="px-6 py-3 sm:px-4 sm:py-2 bg-green-600 text-white rounded-lg shadow-md hover:shadow-lg hover:bg-green-500 transition-all duration-200 font-medium flex-1 sm:flex-none"
