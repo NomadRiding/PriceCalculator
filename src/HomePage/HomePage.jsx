@@ -23,7 +23,7 @@ export default function ClosetEstimator() {
     { id: 18, name: "Gold Rod", price: 25 },
     { id: 19, name: "Black Rod", price: 25 },
     { id: 20, name: "Pull-Down Hanging", price: 300 },
-    { id: 21, name: "Half-A/S", price: 75 },
+    { id: 21, name: "A/S with Hanging", price: 225 },
   ]
 
   const accessories = [
