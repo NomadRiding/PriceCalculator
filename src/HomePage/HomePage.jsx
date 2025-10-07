@@ -41,6 +41,7 @@ export default function ClosetEstimator() {
       isEditingName: true,
       hasColor: false,
       selectedColor: "",
+      isMinimized: false,
     },
   ])
   const [paymentType, setPaymentType] = useState("credit") // "cash" or "credit"
@@ -59,6 +60,7 @@ export default function ClosetEstimator() {
         isEditingName: true,
         hasColor: false,
         selectedColor: "",
+        isMinimized: false,
       },
     ])
   }
@@ -123,6 +125,14 @@ export default function ClosetEstimator() {
     setRooms((prev) =>
       prev.map((room) =>
         room.id === roomId ? { ...room, isEditingName: false } : room
+      )
+    )
+  }
+
+  const toggleRoomMinimize = (roomId) => {
+    setRooms((prev) =>
+      prev.map((room) =>
+        room.id === roomId ? { ...room, isMinimized: !room.isMinimized } : room
       )
     )
   }
@@ -280,84 +290,98 @@ export default function ClosetEstimator() {
                       🗑️ Delete
                     </button>
                   )}
+                  <button
+                    onClick={() => toggleRoomMinimize(room.id)}
+                    className="text-gray-600 hover:text-gray-800 text-sm ml-1"
+                    title={
+                      room.isMinimized ? "Expand room details" : "Minimize room"
+                    }
+                  >
+                    {room.isMinimized ? "📖 Expand" : "📱 Minimize"}
+                  </button>
                 </div>
               )}
             </div>
 
-            {/* Color Section */}
-            <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="flex items-center gap-2 mb-2">
-                <label className="flex items-center gap-1 text-gray-700">
-                  <input
-                    type="checkbox"
-                    checked={room.hasColor}
-                    onChange={() => toggleRoomColor(room.id)}
-                  />
-                  <span className="text-sm font-medium">Color Finish</span>
-                </label>
-                {room.hasColor && room.selectedColor && (
-                  <a
-                    href={
-                      colors.find((c) => c.name === room.selectedColor)
-                        ?.imageUrl
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block w-4 h-4 rounded-full border bg-cover bg-center cursor-pointer hover:ring-2 hover:ring-indigo-300 transition-all duration-200"
-                    style={{
-                      backgroundImage: `url(${
-                        colors.find((c) => c.name === room.selectedColor)
-                          ?.imageUrl
-                      })`,
-                    }}
-                    title="Click to view color details"
-                  ></a>
-                )}
-              </div>
-              {room.hasColor && (
-                <select
-                  className="border border-gray-300 rounded-lg p-2 w-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                  value={room.selectedColor}
-                  onChange={(e) => updateRoomColor(room.id, e.target.value)}
-                >
-                  <option value="">Select a color</option>
-                  {colors.map((color) => (
-                    <option key={color.id} value={color.name}>
-                      {color.name}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-
-            {/* Item Selector */}
-            <ItemSelector
-              items={items}
-              onAdd={(itemId, qty) => addItemToRoom(room.id, itemId, qty)}
-            />
-
-            {/* Room Items List */}
-            <ul className="mt-4 space-y-2">
-              {room.items.map((entry, idx) => {
-                const item = items.find((i) => i.id === entry.itemId)
-                return (
-                  <li
-                    key={idx}
-                    className="flex justify-between items-center text-gray-700 border-b pb-1"
-                  >
-                    <span>
-                      {entry.quantity} × {item?.name}
-                    </span>
-                    <button
-                      className="text-red-600 font-semibold hover:text-red-800"
-                      onClick={() => removeItemFromRoom(room.id, idx)}
+            {/* Room Details - Hidden when minimized */}
+            {!room.isMinimized && (
+              <>
+                {/* Color Section */}
+                <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <label className="flex items-center gap-1 text-gray-700">
+                      <input
+                        type="checkbox"
+                        checked={room.hasColor}
+                        onChange={() => toggleRoomColor(room.id)}
+                      />
+                      <span className="text-sm font-medium">Color Finish</span>
+                    </label>
+                    {room.hasColor && room.selectedColor && (
+                      <a
+                        href={
+                          colors.find((c) => c.name === room.selectedColor)
+                            ?.imageUrl
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block w-4 h-4 rounded-full border bg-cover bg-center cursor-pointer hover:ring-2 hover:ring-indigo-300 transition-all duration-200"
+                        style={{
+                          backgroundImage: `url(${
+                            colors.find((c) => c.name === room.selectedColor)
+                              ?.imageUrl
+                          })`,
+                        }}
+                        title="Click to view color details"
+                      ></a>
+                    )}
+                  </div>
+                  {room.hasColor && (
+                    <select
+                      className="border border-gray-300 rounded-lg p-2 w-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                      value={room.selectedColor}
+                      onChange={(e) => updateRoomColor(room.id, e.target.value)}
                     >
-                      X
-                    </button>
-                  </li>
-                )
-              })}
-            </ul>
+                      <option value="">Select a color</option>
+                      {colors.map((color) => (
+                        <option key={color.id} value={color.name}>
+                          {color.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+
+                {/* Item Selector */}
+                <ItemSelector
+                  items={items}
+                  onAdd={(itemId, qty) => addItemToRoom(room.id, itemId, qty)}
+                />
+
+                {/* Room Items List */}
+                <ul className="mt-4 space-y-2">
+                  {room.items.map((entry, idx) => {
+                    const item = items.find((i) => i.id === entry.itemId)
+                    return (
+                      <li
+                        key={idx}
+                        className="flex justify-between items-center text-gray-700 border-b pb-1"
+                      >
+                        <span>
+                          {entry.quantity} × {item?.name}
+                        </span>
+                        <button
+                          className="text-red-600 font-semibold hover:text-red-800"
+                          onClick={() => removeItemFromRoom(room.id, idx)}
+                        >
+                          X
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </>
+            )}
 
             {/* Room Total */}
             <div className="mt-4 font-bold text-gray-900 text-lg">
