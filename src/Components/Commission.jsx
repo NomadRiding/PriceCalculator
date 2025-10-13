@@ -141,8 +141,8 @@ export default function Commission() {
                   <span className="font-bold text-green-600">
                     $
                     {entry.amount.toLocaleString("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
                     })}
                   </span>
                   <button
@@ -166,8 +166,8 @@ export default function Commission() {
           <span className="text-green-600">
             $
             {total.toLocaleString("en-US", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
             })}
           </span>
         </div>
