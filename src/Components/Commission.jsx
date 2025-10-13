@@ -139,7 +139,11 @@ export default function Commission() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-green-600">
-                    ${entry.amount.toFixed(2)}
+                    $
+                    {entry.amount.toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </span>
                   <button
                     onClick={() => removeEntry(entry.id)}
@@ -159,7 +163,13 @@ export default function Commission() {
       <div className="border-t border-gray-200 pt-4">
         <div className="flex justify-between items-center text-xl font-bold">
           <span className="text-gray-800">Total:</span>
-          <span className="text-green-600">${total.toFixed(2)}</span>
+          <span className="text-green-600">
+            $
+            {total.toLocaleString("en-US", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </span>
         </div>
       </div>
     </div>
