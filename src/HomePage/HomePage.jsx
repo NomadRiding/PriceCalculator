@@ -25,6 +25,8 @@ export default function ClosetEstimator() {
     { id: 19, name: "Black Rod", price: 25 },
     { id: 20, name: "Pull-Down Hanging", price: 300 },
     { id: 21, name: "A/S with Hanging", price: 225 },
+    { id: 22, name: "Corner Unit", price: 400 },
+    { id: 23, name: "Black Handles", price: 10 },
   ]
 
   const accessories = [
