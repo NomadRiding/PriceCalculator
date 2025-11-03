@@ -61,17 +61,17 @@ export default function Commission() {
       </h2>
 
       {/* Quick Add Buttons */}
-      <div className="mb-4">
-        <div className="flex gap-2 mb-3">
+      <div className="mb-3">
+        <div className="flex gap-2 mb-2">
           <button
             onClick={addHalfDay}
-            className="flex-1 px-4 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors font-medium"
+            className="flex-1 px-3 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors font-medium text-sm"
           >
             Half Day - $100
           </button>
           <button
             onClick={addFullDay}
-            className="flex-1 px-4 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors font-medium"
+            className="flex-1 px-3 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors font-medium text-sm"
           >
             Full Day - $200
           </button>
@@ -79,8 +79,8 @@ export default function Commission() {
       </div>
 
       {/* Input Fields */}
-      <div className="mb-4">
-        <div className="flex gap-3 mb-3">
+      <div className="mb-3">
+        <div className="flex gap-3 mb-2">
           <div className="flex-1">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Name/Description
@@ -91,7 +91,7 @@ export default function Commission() {
               onChange={(e) => setCurrentName(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Enter name or description"
-              className="w-full border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full border border-gray-300 rounded-lg p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
@@ -108,14 +108,14 @@ export default function Commission() {
               onKeyPress={handleKeyPress}
               onFocus={(e) => e.target.select()}
               placeholder="Amount"
-              className="w-full border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full border border-gray-300 rounded-lg p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
         </div>
 
         <button
           onClick={addEntry}
-          className="w-full px-4 py-3 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-colors font-medium"
+          className="w-full px-3 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-colors font-medium text-sm"
           disabled={!currentName.trim() || !currentAmount.trim()}
         >
           Add Entry
@@ -124,9 +124,9 @@ export default function Commission() {
 
       {/* Entries List */}
       {entries.length > 0 && (
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">Entries</h3>
-          <div className="space-y-2 max-h-64 overflow-y-auto">
+        <div className="mb-3">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">Entries</h3>
+          <div className="space-y-2 max-h-80 overflow-y-auto">
             {entries.map((entry) => (
               <div
                 key={entry.id}
