@@ -175,9 +175,9 @@ export default function ClosetEstimator() {
       const base = item.price * entry.quantity
 
       if (room.hasColor) {
-        // When color is enabled: 20% for color + 20% commission
+        // When color is enabled: 20% for color + 15% commission
         const colorCost = base * 0.2
-        const commission = base * 0.2
+        const commission = base * 0.15
         return sum + base + colorCost + commission
       } else {
         // When no color: use normal commission rate
