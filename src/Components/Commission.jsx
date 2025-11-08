@@ -138,7 +138,11 @@ export default function Commission() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-green-600">
+                  <span
+                    className={`font-bold ${
+                      entry.amount >= 0 ? "text-green-600" : "text-red-700"
+                    }`}
+                  >
                     $
                     {entry.amount.toLocaleString("en-US", {
                       minimumFractionDigits: 0,
@@ -163,7 +167,7 @@ export default function Commission() {
       <div className="border-t border-gray-200 pt-4">
         <div className="flex justify-between items-center text-xl font-bold">
           <span className="text-gray-800">Total:</span>
-          <span className="text-green-600">
+          <span className={`${total >= 0 ? "text-green-600" : "text-red-700"}`}>
             $
             {total.toLocaleString("en-US", {
               minimumFractionDigits: 0,
