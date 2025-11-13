@@ -126,7 +126,7 @@ export default function Commission() {
       {entries.length > 0 && (
         <div className="mb-3">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">Entries</h3>
-          <div className="space-y-2 max-h-80 overflow-y-auto">
+          <div className="space-y-2 max-h-160 overflow-y-auto">
             {entries.map((entry) => (
               <div
                 key={entry.id}
