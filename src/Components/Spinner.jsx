@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-export default function Spinner() {
+export default function Spinner({ onTitleClick }) {
   const [names, setNames] = useState([])
   const [inputName, setInputName] = useState("")
   const [isSpinning, setIsSpinning] = useState(false)
@@ -36,12 +36,14 @@ export default function Spinner() {
 
     setRotation(newRotation)
 
-    // Calculate winner based on final position
+    // Calculate winner based on final position (arrow at bottom)
     setTimeout(() => {
       const segmentAngle = 360 / names.length
       const normalizedRotation = newRotation % 360
+      // Arrow is at bottom (180 degrees), so add 180 to get the correct segment
+      const adjustedRotation = (normalizedRotation + 180) % 360
       const winnerIndex =
-        Math.floor((360 - normalizedRotation) / segmentAngle) % names.length
+        Math.floor((360 - adjustedRotation) / segmentAngle) % names.length
       setWinner(names[winnerIndex])
       setIsSpinning(false)
     }, 3000) // 3 second spin duration
@@ -70,8 +72,12 @@ export default function Spinner() {
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
-      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
-        🎯 Name Spinner
+      <h2
+        className="text-3xl font-bold text-center mb-8 text-gray-800 cursor-pointer hover:text-blue-600 transition-colors duration-200"
+        onClick={onTitleClick}
+        title="Click to return to home"
+      >
+        🎁 Buyer's Givey
       </h2>
 
       {/* Input Section */}
@@ -122,10 +128,13 @@ export default function Spinner() {
           {/* Wheel Container */}
           <div className="relative w-full h-full">
             {/* Arrow Pointer */}
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 z-10">
-              <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-transparent border-b-gray-800"></div>
-            </div>
-
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-3 z-10">
+              <img
+                src="https://www.nicepng.com/png/full/170-1701158_seta-para-cima-icon-arrow-up.png"
+                alt="Arrow Pointer"
+                className="w-8 h-8 object-contain"
+              />
+            </div>{" "}
             {/* Wheel */}
             <svg
               className={`w-full h-full transition-transform duration-[3000ms] ease-out ${
@@ -179,7 +188,6 @@ export default function Spinner() {
                 )
               })}
             </svg>
-
             {/* Center Circle */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-gray-800 rounded-full border-4 border-white"></div>
           </div>
@@ -188,19 +196,30 @@ export default function Spinner() {
 
       {/* Controls */}
       <div className="text-center space-y-4">
-        <div className="space-x-4">
+        <div className="flex justify-center items-center gap-4">
           <button
             onClick={spinWheel}
             disabled={names.length < 2 || isSpinning}
-            className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
+            className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
           >
-            {isSpinning ? "Spinning..." : "🎲 Spin!"}
+            {isSpinning ? (
+              "Spinning..."
+            ) : (
+              <>
+                <img
+                  src="https://archives.bulbagarden.net/media/upload/a/a6/Bag_Master_Ball_SV_Sprite.png"
+                  alt="Master Ball"
+                  className="w-6 h-6 object-contain"
+                />
+                Spin!
+              </>
+            )}
           </button>
 
           <button
             onClick={resetWheel}
             disabled={isSpinning}
-            className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
+            className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center"
           >
             Reset
           </button>
