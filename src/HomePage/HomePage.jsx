@@ -47,7 +47,7 @@ export default function ClosetEstimator() {
       isMinimized: false,
     },
   ])
-  const [currentView, setCurrentView] = useState("home") // "home" or "commission"
+  const [currentView, setCurrentView] = useState("home") // "home", "commission", or "spinner"
   const [paymentType, setPaymentType] = useState("credit") // "cash" or "credit"
   const [showAdminFee, setShowAdminFee] = useState(true) // Administrative fee toggle
   const [showCOI, setShowCOI] = useState(false) // COI Required toggle
@@ -594,6 +594,18 @@ export default function ClosetEstimator() {
             className="px-8 py-3 bg-purple-600 text-white rounded-lg shadow-md hover:shadow-lg hover:bg-purple-700 transition-all duration-200 font-medium"
           >
             💼 Billing
+          </button>
+        </div>
+
+        {/* Spinner Button */}
+        <div className="mt-4 text-center">
+          <button
+            onClick={() =>
+              window.open("./spinner.html", "_blank", "width=1200,height=800")
+            }
+            className="px-8 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:shadow-lg hover:bg-blue-700 transition-all duration-200 font-medium"
+          >
+            🎯 Spinner
           </button>
         </div>
       </div>

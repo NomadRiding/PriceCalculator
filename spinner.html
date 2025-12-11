@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyer's Givey - Organizers Unlimited</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .spin-animation {
+            transition: transform 3s ease-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 flex items-center justify-center p-3 sm:p-6">
+    <div class="w-full max-w-4xl">
+        <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+                🎁 Buyer's Givey
+            </h2>
+
+            <!-- Input Section -->
+            <div class="mb-8">
+                <div class="flex gap-2 mb-4">
+                    <input
+                        type="text"
+                        id="nameInput"
+                        placeholder="Enter a name..."
+                        class="flex-1 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                        id="addButton"
+                        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                    >
+                        Add
+                    </button>
+                </div>
+
+                <!-- Names List -->
+                <div id="namesList" class="flex flex-wrap gap-2">
+                </div>
+            </div>
+
+            <!-- Spinning Wheel -->
+            <div id="wheelContainer" class="relative mx-auto mb-8 hidden" style="width: 300px; height: 300px;">
+                <!-- Wheel Container -->
+                <div class="relative w-full h-full">
+                    <!-- Arrow Pointer -->
+                    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1 z-10">
+                        <img 
+                            src="https://www.nicepng.com/png/full/170-1701158_seta-para-cima-icon-arrow-up.png" 
+                            alt="Arrow Pointer" 
+                            class="w-8 h-8 drop-shadow-lg"
+                        />
+                    </div>
+                    
+                    <!-- Wheel -->
+                    <svg
+                        id="wheel"
+                        class="w-full h-full spin-animation"
+                        viewBox="0 0 200 200"
+                    >
+                    </svg>
+                    
+                    <!-- Center Circle -->
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-gray-800 rounded-full border-4 border-white"></div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="text-center space-y-4">
+                <div class="flex justify-center items-center space-x-4">
+                    <button
+                        id="spinButton"
+                        disabled
+                        class="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center gap-2"
+                    >
+                        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png" alt="Pokeball" class="w-8 h-8" />
+                        Spin!
+                    </button>
+                    
+                    <button
+                        id="resetButton"
+                        class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
+                    >
+                        Reset
+                    </button>
+                </div>
+                
+                <p id="instruction" class="text-gray-500 text-sm">Add at least 2 names to spin</p>
+            </div>
+
+            <!-- Winner Display -->
+            <div id="winnerDisplay" class="mt-8 text-center hidden">
+                <div class="inline-block bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-8 py-4 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-2">🎉 Winner!</h3>
+                    <p id="winnerName" class="text-3xl font-extrabold"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let names = [];
+        let isSpinning = false;
+        let rotation = 0;
+
+        const nameInput = document.getElementById('nameInput');
+        const addButton = document.getElementById('addButton');
+        const namesList = document.getElementById('namesList');
+        const wheelContainer = document.getElementById('wheelContainer');
+        const wheel = document.getElementById('wheel');
+        const spinButton = document.getElementById('spinButton');
+        const resetButton = document.getElementById('resetButton');
+        const instruction = document.getElementById('instruction');
+        const winnerDisplay = document.getElementById('winnerDisplay');
+        const winnerName = document.getElementById('winnerName');
+
+        function addName() {
+            const name = nameInput.value.trim();
+            if (name && !names.includes(name)) {
+                names.push(name);
+                nameInput.value = '';
+                updateUI();
+            }
+        }
+
+        function removeName(nameToRemove) {
+            names = names.filter(name => name !== nameToRemove);
+            updateUI();
+            winnerDisplay.classList.add('hidden');
+        }
+
+        function updateUI() {
+            // Update names list
+            namesList.innerHTML = names.map((name, index) => `
+                <span class="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full text-sm">
+                    ${name}
+                    <button onclick="removeName('${name}')" class="text-red-500 hover:text-red-700 ml-1">×</button>
+                </span>
+            `).join('');
+
+            // Update wheel visibility and controls
+            if (names.length > 0) {
+                wheelContainer.classList.remove('hidden');
+                drawWheel();
+            } else {
+                wheelContainer.classList.add('hidden');
+            }
+
+            // Update spin button
+            if (names.length >= 2) {
+                spinButton.disabled = false;
+                instruction.textContent = '';
+            } else {
+                spinButton.disabled = true;
+                instruction.textContent = names.length === 1 ? 'Add at least 1 more name to spin' : 'Add at least 2 names to spin';
+            }
+        }
+
+        function drawWheel() {
+            const segmentAngle = 360 / names.length;
+            const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1', '#f97316'];
+            
+            wheel.innerHTML = names.map((name, index) => {
+                const startAngle = index * segmentAngle - 90;
+                const endAngle = (index + 1) * segmentAngle - 90;
+                
+                const startRadian = (startAngle * Math.PI) / 180;
+                const endRadian = (endAngle * Math.PI) / 180;
+                
+                const largeArcFlag = segmentAngle > 180 ? 1 : 0;
+                
+                const x1 = 100 + 90 * Math.cos(startRadian);
+                const y1 = 100 + 90 * Math.sin(startRadian);
+                const x2 = 100 + 90 * Math.cos(endRadian);
+                const y2 = 100 + 90 * Math.sin(endRadian);
+                
+                const textAngle = (startAngle + endAngle) / 2;
+                const textRadian = (textAngle * Math.PI) / 180;
+                const textX = 100 + 60 * Math.cos(textRadian);
+                const textY = 100 + 60 * Math.sin(textRadian);
+                
+                return `
+                    <g>
+                        <path
+                            d="M 100 100 L ${x1} ${y1} A 90 90 0 ${largeArcFlag} 1 ${x2} ${y2} Z"
+                            fill="${colors[index % colors.length]}"
+                            stroke="#fff"
+                            stroke-width="2"
+                        />
+                        <text
+                            x="${textX}"
+                            y="${textY}"
+                            text-anchor="middle"
+                            dominant-baseline="middle"
+                            class="fill-white font-bold text-sm"
+                            transform="rotate(${textAngle}, ${textX}, ${textY})"
+                        >
+                            ${name.length > 8 ? name.substring(0, 8) + '...' : name}
+                        </text>
+                    </g>
+                `;
+            }).join('');
+        }
+
+        function spinWheel() {
+            if (names.length < 2 || isSpinning) return;
+
+            isSpinning = true;
+            winnerDisplay.classList.add('hidden');
+            spinButton.innerHTML = '<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png" alt="Pokeball" class="w-8 h-8" /> Spinning...';
+            spinButton.disabled = true;
+            
+            // Random rotation between 1440 and 2880 degrees (4-8 full rotations)
+            const minRotation = 1440;
+            const maxRotation = 2880;
+            const randomRotation = Math.random() * (maxRotation - minRotation) + minRotation;
+            const newRotation = rotation + randomRotation;
+            
+            rotation = newRotation;
+            wheel.style.transform = `rotate(${newRotation}deg)`;
+            
+            // Calculate winner based on final position (arrow at bottom = 180 degrees)
+            setTimeout(() => {
+                const segmentAngle = 360 / names.length;
+                const normalizedRotation = newRotation % 360;
+                // Adjust for bottom arrow by adding 180 degrees
+                const adjustedRotation = (normalizedRotation + 180) % 360;
+                const winnerIndex = Math.floor((360 - adjustedRotation) / segmentAngle) % names.length;
+                
+                winnerName.textContent = names[winnerIndex];
+                winnerDisplay.classList.remove('hidden');
+                
+                isSpinning = false;
+                spinButton.innerHTML = '<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png" alt="Pokeball" class="w-8 h-8" /> Spin!';
+                spinButton.disabled = false;
+            }, 3000);
+        }
+
+        function resetWheel() {
+            if (isSpinning) return;
+            
+            names = [];
+            rotation = 0;
+            wheel.style.transform = 'rotate(0deg)';
+            winnerDisplay.classList.add('hidden');
+            updateUI();
+        }
+
+        // Event listeners
+        addButton.addEventListener('click', addName);
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addName();
+        });
+        spinButton.addEventListener('click', spinWheel);
+        resetButton.addEventListener('click', resetWheel);
+
+        // Initial UI update
+        updateUI();
+    </script>
+</body>
+</html>
