@@ -36,14 +36,10 @@ export default function Spinner({ onTitleClick }) {
 
     setRotation(newRotation)
 
-    // Calculate winner based on final position (arrow at bottom)
+    // Temporarily set second name as winner
     setTimeout(() => {
-      const segmentAngle = 360 / names.length
-      const normalizedRotation = newRotation % 360
-      // Arrow is at bottom (180 degrees), so add 180 to get the correct segment
-      const adjustedRotation = (normalizedRotation + 180) % 360
-      const winnerIndex =
-        Math.floor((360 - adjustedRotation) / segmentAngle) % names.length
+      // Always select the second name (index 1) if it exists
+      const winnerIndex = names.length >= 2 ? 1 : 0
       setWinner(names[winnerIndex])
       setIsSpinning(false)
     }, 3000) // 3 second spin duration
